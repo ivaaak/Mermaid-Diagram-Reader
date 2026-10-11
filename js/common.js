@@ -88,9 +88,18 @@
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: 'strict',
-      theme: currentTheme() === 'dark' ? 'dark' : 'default',
+      theme: currentTheme() === 'dark' ? 'redux-dark-color' : 'redux-color',
+      // Mermaid's default (200px) re-wraps lines the author already broke by hand.
+      flowchart: { wrappingWidth: 400 },
     });
   }
+
+  // The redux themes use the Recursive font. Mermaid sizes boxes from measured text, so wait for the
+  // font (briefly) before the first render or labels would be measured in the fallback font.
+  const fontReady = Promise.race([
+    document.fonts.load('16px "Recursive Variable"').catch(() => {}),
+    new Promise((resolve) => setTimeout(resolve, 3000)),
+  ]);
 
   // Resolves to { svg } or { error }; never rejects.
   async function render(code) {
@@ -98,9 +107,10 @@
       return { error: 'The Mermaid library could not be loaded. Check your internet connection and reload.' };
     }
     if (!code || !code.trim()) return { error: 'This diagram is empty.' };
+    await fontReady;
     const id = 'mdr-render-' + ++renderSeq;
     try {
-      const { svg } = await mermaid.render(id, code);
+      const { svg } = await mermaid.render(id, normalize(code));
       return { svg };
     } catch (e) {
       // Mermaid leaves its scratch elements behind when rendering fails.
@@ -110,6 +120,11 @@
       }
       return { error: (e && e.message) || String(e) };
     }
+  }
+
+  // Flowchart labels often use a literal backslash-n for line breaks, which current Mermaid prints as text.
+  function normalize(code) {
+    return detectType(code) === 'Flowchart' ? code.replace(/\\n/g, '<br/>') : code;
   }
 
   const TYPES = [

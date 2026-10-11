@@ -25,7 +25,7 @@
   const nameEl = $('name');
   const errorEl = $('renderError');
 
-  const MIN_ZOOM = 0.1;
+  const MIN_ZOOM = 0.02;
   const MAX_ZOOM = 8;
   const view = { x: 0, y: 0, scale: 1 };
   let natural = null; // intrinsic size of the rendered SVG

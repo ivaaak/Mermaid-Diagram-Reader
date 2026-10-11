@@ -36,6 +36,12 @@
 
 html, body { height: 100%; }
 
+/* Phones may enlarge text after Mermaid has measured it, which makes labels outgrow their boxes. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* Never clip a label, even if the browser measured it slightly too small. */
+.canvas foreignObject, .preview foreignObject { overflow: visible; }
+
 body {
   margin: 0;
   background: var(--bg);
