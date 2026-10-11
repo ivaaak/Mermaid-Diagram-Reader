@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mermaid Reader</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+  <script src="js/common.js"></script>
+</head>
+<body class="page-dashboard">
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>Mermaid Reader</a>
+    <span class="spacer"></span>
+    <button class="btn ghost icon" id="themeToggle" type="button" title="Toggle light / dark" aria-label="Toggle light / dark theme">◐</button>
+  </header>
+
+  <main class="container">
+    <section class="page-head">
+      <div>
+        <h1>Your diagrams</h1>
+        <p class="muted" id="stats"></p>
+      </div>
+      <div class="actions">
+        <button class="btn" id="newBtn" type="button">New diagram</button>
+        <button class="btn primary" id="uploadBtn" type="button">Upload files</button>
+        <input id="fileInput" type="file" accept=".mmd,.mermaid,.md,.markdown,.txt" multiple hidden>
+      </div>
+    </section>
+
+    <button class="dropzone" id="dropzone" type="button">
+      <strong>Drop Mermaid files here</strong>
+      <span class="muted">or click to browse — <code>.mmd</code>, <code>.mermaid</code>, <code>.txt</code>, or Markdown with <code>```mermaid</code> blocks</span>
+    </button>
+
+    <section class="filters" id="filters" hidden>
+      <input id="search" type="search" placeholder="Search by name or content…" aria-label="Search diagrams">
+      <select id="sort" aria-label="Sort diagrams">
+        <option value="updated">Recently updated</option>
+        <option value="created">Recently added</option>
+        <option value="name">Name A–Z</option>
+      </select>
+    </section>
+
+    <section class="grid" id="grid" aria-live="polite"></section>
+
+    <section class="empty" id="empty" hidden>
+      <h2>No diagrams yet</h2>
+      <p class="muted">Upload a file, paste Mermaid code, or start with a few examples. Everything stays in this browser.</p>
+      <button class="btn" id="samplesBtn" type="button">Add sample diagrams</button>
+    </section>
+
+    <p class="empty muted" id="noMatches" hidden>No diagrams match your search.</p>
+  </main>
+
+  <dialog id="newDialog">
+    <form method="dialog" id="newForm">
+      <h2>New diagram</h2>
+      <label>Name
+        <input id="newName" type="text" placeholder="Untitled diagram" autocomplete="off">
+      </label>
+      <label>Mermaid code
+        <textarea id="newCode" rows="12" spellcheck="false" required placeholder="flowchart LR&#10;  A[Start] --> B[Done]"></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="newCancel">Cancel</button>
+        <button class="btn primary" type="submit">Save diagram</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="drag-overlay" id="dragOverlay" hidden>Drop to add diagrams</div>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

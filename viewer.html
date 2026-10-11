@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Diagram — Mermaid Reader</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+  <script src="js/common.js"></script>
+</head>
+<body class="page-viewer">
+  <header class="topbar">
+    <a class="btn ghost" href="index.html">← Dashboard</a>
+    <input class="title-input" id="name" type="text" aria-label="Diagram name" autocomplete="off">
+    <span class="badge" id="typeBadge"></span>
+    <span class="spacer"></span>
+    <button class="btn ghost icon" id="themeToggle" type="button" title="Toggle light / dark" aria-label="Toggle light / dark theme">◐</button>
+  </header>
+
+  <div class="viewer" id="viewer">
+    <aside class="sidebar">
+      <section>
+        <h2>Details</h2>
+        <dl class="details">
+          <dt>Type</dt><dd id="dType"></dd>
+          <dt>Lines</dt><dd id="dLines"></dd>
+          <dt>Size</dt><dd id="dSize"></dd>
+          <dt>Source</dt><dd id="dSource"></dd>
+          <dt>Added</dt><dd id="dCreated"></dd>
+          <dt>Updated</dt><dd id="dUpdated"></dd>
+        </dl>
+      </section>
+
+      <section class="source">
+        <h2>Source <span class="dirty" id="dirty" hidden>unsaved</span></h2>
+        <textarea id="code" spellcheck="false" aria-label="Mermaid source"></textarea>
+        <div class="row">
+          <button class="btn primary" id="saveBtn" type="button" disabled>Save</button>
+          <button class="btn" id="revertBtn" type="button" disabled>Revert</button>
+          <span class="spacer"></span>
+          <button class="btn ghost" id="copyBtn" type="button">Copy</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Export</h2>
+        <div class="row">
+          <button class="btn" id="downloadMmd" type="button">Download .mmd</button>
+          <button class="btn" id="downloadSvg" type="button">Download .svg</button>
+        </div>
+      </section>
+
+      <section>
+        <button class="btn danger" id="deleteBtn" type="button">Delete diagram</button>
+      </section>
+    </aside>
+
+    <main class="stage" id="stage">
+      <div class="canvas" id="canvas"></div>
+      <pre class="render-error" id="renderError" hidden></pre>
+      <div class="stage-tools">
+        <button class="btn ghost icon" id="zoomOut" type="button" title="Zoom out (−)" aria-label="Zoom out">−</button>
+        <span class="zoom-label" id="zoomLabel">100%</span>
+        <button class="btn ghost icon" id="zoomIn" type="button" title="Zoom in (+)" aria-label="Zoom in">+</button>
+        <button class="btn ghost" id="fitBtn" type="button" title="Fit to screen (0)">Fit</button>
+        <span class="divider"></span>
+        <button class="btn ghost" id="readerBtn" type="button" title="Toggle reader view (F)">Reader view</button>
+      </div>
+    </main>
+  </div>
+
+  <section class="empty" id="notFound" hidden>
+    <h2>Diagram not found</h2>
+    <p class="muted">It may have been deleted, or it was saved in a different browser.</p>
+    <a class="btn primary" href="index.html">Back to dashboard</a>
+  </section>
+
+  <script src="js/viewer.js"></script>
+</body>
+</html>
