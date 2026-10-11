@@ -198,6 +198,9 @@
     save(items);
   }
 
+  // Phones often grey out files with extensions they don't recognise (.mmd), so don't filter there.
+  if (window.matchMedia('(pointer: coarse)').matches) fileInput.removeAttribute('accept');
+
   // ---------- Events ----------
   $('themeToggle').addEventListener('click', toggleTheme);
   document.addEventListener('mdr:theme', refresh);

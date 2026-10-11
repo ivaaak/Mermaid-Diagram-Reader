@@ -124,26 +124,53 @@
     zoomAt(e.clientX - rect.left, e.clientY - rect.top, Math.exp(-e.deltaY * 0.0015));
   }, { passive: false });
 
-  let drag = null;
+  // One pointer pans; two pointers pinch-zoom (and pan with the midpoint).
+  const pointers = new Map();
+  let gesture = null;
+
+  function startGesture() {
+    const pts = Array.from(pointers.values());
+    if (pts.length === 1) {
+      gesture = { px: pts[0].x, py: pts[0].y };
+    } else if (pts.length >= 2) {
+      gesture = {
+        px: (pts[0].x + pts[1].x) / 2,
+        py: (pts[0].y + pts[1].y) / 2,
+        dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) || 1,
+      };
+    } else {
+      gesture = null;
+    }
+    stage.classList.toggle('dragging', !!gesture);
+  }
+
   stage.addEventListener('pointerdown', (e) => {
-    if (e.button !== 0 || e.target.closest('.stage-tools')) return;
-    drag = { px: e.clientX, py: e.clientY, x: view.x, y: view.y };
+    if (e.button !== 0 || e.target.closest('.stage-tools, .render-error')) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     stage.setPointerCapture(e.pointerId);
-    stage.classList.add('dragging');
+    startGesture();
   });
   stage.addEventListener('pointermove', (e) => {
-    if (!drag) return;
-    view.x = drag.x + e.clientX - drag.px;
-    view.y = drag.y + e.clientY - drag.py;
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const prev = gesture;
+    startGesture();
+    view.x += gesture.px - prev.px;
+    view.y += gesture.py - prev.py;
     autoFit = false;
-    applyView();
+    if (gesture.dist && prev.dist) {
+      const rect = stage.getBoundingClientRect();
+      zoomAt(gesture.px - rect.left, gesture.py - rect.top, gesture.dist / prev.dist);
+    } else {
+      applyView();
+    }
   });
-  const endDrag = () => {
-    drag = null;
-    stage.classList.remove('dragging');
+  const endPointer = (e) => {
+    if (!pointers.delete(e.pointerId)) return;
+    startGesture();
   };
-  stage.addEventListener('pointerup', endDrag);
-  stage.addEventListener('pointercancel', endDrag);
+  stage.addEventListener('pointerup', endPointer);
+  stage.addEventListener('pointercancel', endPointer);
 
   new ResizeObserver(() => {
     if (autoFit) fit();
@@ -155,10 +182,15 @@
 
   function setReader(on) {
     document.body.classList.toggle('reader', on);
-    $('readerBtn').textContent = on ? 'Exit reader view' : 'Reader view';
+    document.body.classList.remove('show-details');
+    $('readerLabel').textContent = on ? 'Exit reader' : 'Reader';
     fit();
   }
   $('readerBtn').addEventListener('click', () => setReader(!document.body.classList.contains('reader')));
+
+  // On narrow screens the details panel opens over the diagram instead of sitting beside it.
+  $('detailsBtn').addEventListener('click', () => document.body.classList.add('show-details'));
+  $('closeDetails').addEventListener('click', () => document.body.classList.remove('show-details'));
 
   // ---------- Editing ----------
   let debounce = null;

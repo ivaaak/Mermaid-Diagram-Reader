@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Diagram — Mermaid Reader</title>
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
@@ -10,7 +10,7 @@
 </head>
 <body class="page-viewer">
   <header class="topbar">
-    <a class="btn ghost" href="index.html">← Dashboard</a>
+    <a class="btn ghost" href="index.html" aria-label="Back to dashboard">←<span class="wide-only"> Dashboard</span></a>
     <input class="title-input" id="name" type="text" aria-label="Diagram name" autocomplete="off">
     <span class="badge" id="typeBadge"></span>
     <span class="spacer"></span>
@@ -19,6 +19,7 @@
 
   <div class="viewer" id="viewer">
     <aside class="sidebar">
+      <button class="btn narrow-only" id="closeDetails" type="button">← Back to diagram</button>
       <section>
         <h2>Details</h2>
         <dl class="details">
@@ -64,7 +65,8 @@
         <button class="btn ghost icon" id="zoomIn" type="button" title="Zoom in (+)" aria-label="Zoom in">+</button>
         <button class="btn ghost" id="fitBtn" type="button" title="Fit to screen (0)">Fit</button>
         <span class="divider"></span>
-        <button class="btn ghost" id="readerBtn" type="button" title="Toggle reader view (F)">Reader view</button>
+        <button class="btn ghost narrow-only" id="detailsBtn" type="button">Details</button>
+        <button class="btn ghost" id="readerBtn" type="button" title="Toggle reader view (F)"><span id="readerLabel">Reader</span><span class="wide-only"> view</span></button>
       </div>
     </main>
   </div>

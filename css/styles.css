@@ -363,11 +363,70 @@ body.reader .topbar, body.reader .sidebar { display: none; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .toast.error { background: var(--danger); color: #fff; }
 
+/* ---------- Mobile ---------- */
+.narrow-only { display: none; }
+
+.topbar {
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+.page-viewer { height: 100dvh; overscroll-behavior: none; }
+
+@media (pointer: coarse) {
+  .btn { min-height: 44px; }
+  .btn.icon { min-width: 44px; }
+  .btn.small { min-height: 36px; padding: 6px 12px; }
+  /* 16px stops iOS from zooming the page when a field is focused. */
+  input[type="text"], input[type="search"], select, textarea, .title-input { font-size: 16px !important; }
+  input[type="text"], input[type="search"], select { min-height: 44px; }
+  .card:hover { transform: none; }
+}
+
 @media (max-width: 820px) {
-  .page-viewer { overflow: auto; }
-  .viewer { flex-direction: column-reverse; }
-  .sidebar { width: auto; border-right: 0; border-top: 1px solid var(--border); overflow: visible; }
-  .stage { flex: none; height: 62vh; }
-  body.reader .stage { height: 100vh; }
+  .narrow-only { display: inline-flex; }
+  .wide-only { display: none; }
+
+  .topbar { gap: 6px; }
+  .topbar .badge { display: none; }
+  .title-input { flex: 1 1 auto; }
+
+  /* Diagram fills the screen; details open as a full panel on top of it. */
+  .viewer { position: relative; }
+  .sidebar {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    width: auto;
+    border-right: 0;
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+  body.show-details .sidebar { display: flex; }
+  .sidebar .source { flex: none; }
+  .sidebar .source textarea { flex: none; height: 46dvh; }
+
+  .stage-tools {
+    left: 50%;
+    right: auto;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    max-width: calc(100% - 16px);
+  }
+  .stage-tools .btn { padding-left: 10px; padding-right: 10px; }
+  .divider { margin: 0 2px; }
+  body.reader #detailsBtn { display: none; }
+
+  .container { padding: 20px 16px 48px; }
+  h1 { font-size: 22px; }
+  .page-head { align-items: stretch; flex-direction: column; }
+  .actions .btn { flex: 1; }
   .filters { flex-direction: column; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .dialog-actions .btn { flex: 1; }
+  dialog { padding: 18px; }
+}
+
+/* Dragging files isn't a thing on touch screens; the Upload button covers it. */
+@media (pointer: coarse) and (max-width: 820px) {
+  .dropzone { display: none; }
 }
